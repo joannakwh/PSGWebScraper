@@ -82,5 +82,5 @@ for year in years:
             df = pd.concat([df, data], axis=0)
             print(data)
 
-df.to_csv('output.csv', index = False)
+df.to_csv(constants.OUTPUT_FILE_NAME, index = False)
 

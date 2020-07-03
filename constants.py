@@ -1,3 +1,6 @@
+# must end in .csv
+OUTPUT_FILE_NAME = 'output.csv'
+
 COLUMNS = [
     'YEAR',
     'MAKE',
