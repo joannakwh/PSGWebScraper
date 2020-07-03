@@ -1,4 +1,5 @@
 import key
+import constants
 import requests
 import pandas as pd
 import json
@@ -55,7 +56,6 @@ def getInfo(year, make, model):
         values = tree.xpath('//input[@name="' + field + '"]/@value')
         for value in values: 
             info[field] = value
-    print(info)
     return info
 
 # df = pd.DataFrame()    
@@ -70,8 +70,19 @@ def getInfo(year, make, model):
 #             print(data)
 #             time.sleep(3)
             
-df = pd.DataFrame()
+df = pd.DataFrame(index=constants.COLUMNS).transpose()
+
 info = getInfo(2020, 'ACURA', 'ILX')
-data = pd.DataFrame(rows,)
+new_row = pd.DataFrame(data=info.values(), index=info.keys()).transpose()
+info2 = getInfo(2020, 'ACURA', 'MDX')
+new_row2 = pd.DataFrame(data=info.values(), index=info.keys()).transpose()
+print(new_row)
+df = pd.concat([df, new_row], axis=0)
+df = pd.concat([df, new_row2], axis=0)
 print(df)
+new_row.to_csv('hi.csv', index = False)
+df.append(new_row, ignore_index=True)
+print(df)
+
+df.to_csv('hi.csv', index = False)
 
