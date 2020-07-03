@@ -3,6 +3,7 @@ import constants
 import requests
 import pandas as pd
 import json
+import time
 from pandas import Series, DataFrame
 from lxml import html
 
@@ -43,14 +44,6 @@ def getModels(year, make):
 def getInfo(year, make, model):
     info = {}
     tree = makeRequest(str(year), str(make), str(model))
-    # bpmet = tree.xpath('//input[@name="BPMET"]/@value')
-    # bpstd = tree.xpath('//input[@name="BPSTD"]/@value')
-    # hub = tree.xpath('//input[@name="HUB"]/@value')
-    # lug = tree.xpath('//input[@name="LUG"]/@value')
-    # lugtype = tree.xpath('//input[@name="LUGTYPE"]/@value')
-    # offset = tree.xpath('//input[@name="OFFSET"]/@value')
-    # offsetmm = tree.xpath('//input[@name="OFFSETMM"]/@value')
-    # info.append({ 'BPMET' : bpmet, 'BPSTD' : bpstd, 'HUB' : hub, 'LUG' : lug, 'LUGTYPE': lugtype, 'OFFSET': offset, 'OFFSETMM': offsetmm})
     fields = tree.xpath('//input/@name')
     for field in fields:
         values = tree.xpath('//input[@name="' + field + '"]/@value')
@@ -58,31 +51,19 @@ def getInfo(year, make, model):
             info[field] = value
     return info
 
-# df = pd.DataFrame()    
-# years = getYears()
-# for year in years:
-#     makes = getMakes(year)
-#     for make in makes:
-#         models = getModels(year, make)
-#         for model in models: 
-#             infos = getInfo(year, make, model)
-#             data = pd.DataFrame(infos)
-#             print(data)
-#             time.sleep(3)
-            
+
 df = pd.DataFrame(index=constants.COLUMNS).transpose()
-
-info = getInfo(2020, 'ACURA', 'ILX')
-new_row = pd.DataFrame(data=info.values(), index=info.keys()).transpose()
-info2 = getInfo(2020, 'ACURA', 'MDX')
-new_row2 = pd.DataFrame(data=info.values(), index=info.keys()).transpose()
-print(new_row)
-df = pd.concat([df, new_row], axis=0)
-df = pd.concat([df, new_row2], axis=0)
-print(df)
-new_row.to_csv('hi.csv', index = False)
-df.append(new_row, ignore_index=True)
-print(df)
-
-df.to_csv('hi.csv', index = False)
+years = getYears()
+for year in years:
+    print(year)
+    makes = getMakes(int(year))
+    for make in makes:
+        print(make)
+        models = getModels(int(year), make)
+        for model in models: 
+            info = getInfo(int(year), make, model)
+            data = pd.DataFrame(data=info.values(), index=info.keys()).transpose()
+            df = pd.concat([df, data], axis=0)
+            print(data)
+df.to_csv('output.csv', index = False)
 
